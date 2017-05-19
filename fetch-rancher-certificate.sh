@@ -26,6 +26,10 @@ get_cert_val "$CERT_NAME" "key" > "${TEMP_DIR}/${CERT_NAME}.key"
 get_cert_val "$CERT_NAME" "cert" > "${TEMP_DIR}/${CERT_NAME}.crt"
 get_cert_val "$CERT_NAME" "certchain" > "${TEMP_DIR}/${CERT_NAME}.certchain"
 
+if [[ $(< "${TEMP_DIR}/${CERT_NAME}.certchain") = "null" ]]; then
+  rm "${TEMP_DIR}/${CERT_NAME}.certchain"
+fi
+
 if diff -N -q -r "$CERT_DIR" "$TEMP_DIR" > /dev/null; then
   rm -rf "$TEMP_DIR"
 else
