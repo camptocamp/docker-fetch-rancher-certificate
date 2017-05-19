@@ -2,7 +2,7 @@
 
 CATTLE_CONFIG_URL_V2=${CATTLE_CONFIG_URL/v1/v2-beta}
 CERT_NAME="$1"
-CERT_DIR=${2:-/usr/src/haproxy/certs}
+CERT_DIR=${2:-/usr/src/certs}
 
 function get_cert_val() {
   local name="$1" k="$2"
@@ -32,7 +32,7 @@ else
   cp "$TEMP_DIR"/* "$CERT_DIR"
   rm -rf "$TEMP_DIR"
 
-  SOURCE="/usr/src/haproxy/"
+  SOURCE="/usr/src/certs"
   DEST="/usr/local/etc/haproxy/"
   
   rsync -av --delete "$SOURCE" "$DEST"
