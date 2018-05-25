@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 
 CATTLE_CONFIG_URL_V2=${CATTLE_CONFIG_URL/v1/v2-beta}
 CERT_NAME="$1"
