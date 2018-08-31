@@ -50,5 +50,5 @@ else
   mv "$TEMP_DIR"/* "$CERT_DIR"
   rm -rf "$TEMP_DIR"
 
-  pkill -HUP -f haproxy-systemd-wrapper
+  pkill -USR2 -o -e -f '^haproxy\s.*-f\s+/usr/local/etc/haproxy/reverse-proxy.cfg'
 fi
