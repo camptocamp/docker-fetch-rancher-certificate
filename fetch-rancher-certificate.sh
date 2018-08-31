@@ -10,7 +10,7 @@ TEMP_DIR=$(mktemp -d -p /tmp)
 function get_cert_val() {
   local name="$1" k="$2"
   if test $? -ne 0; then
-    echo "Can't fetch ${name} certificate." >&2
+    echo "Can't fetch '${name}' certificate." >&2
     exit 1
   fi
   jq -r ".data[] | select(.name == \"${name}\").${k}" <<<"${ALL_CERTS_JSON}"
@@ -18,6 +18,8 @@ function get_cert_val() {
 
 function get_cert() {
   local name="$1"
+
+  echo -n "Fetching '${name}' cert... "
 
   get_cert_val "$name" "key" > "${TEMP_DIR}/${name}.pem"
   get_cert_val "$name" "cert" >> "${TEMP_DIR}/${name}.pem"
@@ -27,6 +29,7 @@ function get_cert() {
     cat "${TEMP_DIR}/${name}.certchain" >> "${TEMP_DIR}/${name}.pem"
   fi
   rm "${TEMP_DIR}/${name}.certchain"
+  echo "done."
 }
 
 function get_all_certs() {
@@ -44,11 +47,14 @@ else
 fi
 
 if diff -N -q -r "$CERT_DIR" "$TEMP_DIR" > /dev/null; then
+  echo "No updates found, cleaning up."
   rm -rf "$TEMP_DIR"
 else
+  echo -n "Updates found, about to reload HAProxy... "
   rm -f "$CERT_DIR"/*
   mv "$TEMP_DIR"/* "$CERT_DIR"
   rm -rf "$TEMP_DIR"
 
   pkill -USR2 -o -e -f '^haproxy\s.*-f\s+/usr/local/etc/haproxy/reverse-proxy.cfg'
+  if [ $? -gt 0 ]; then echo 'failed!'; else echo 'done.'; fi
 fi
