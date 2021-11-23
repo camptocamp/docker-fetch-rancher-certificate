@@ -4,7 +4,7 @@ CATTLE_CONFIG_URL_V2=${CATTLE_CONFIG_URL/v1/v2-beta}
 CERT_NAME="$1"
 CERT_DIR=${2:-/usr/local/etc/haproxy/certs}
 
-ALL_CERTS_JSON=$(curl -s  -H "Authorization: ${CATTLE_AGENT_INSTANCE_AUTH}" "${CATTLE_CONFIG_URL_V2}/certificates")
+ALL_CERTS_JSON=$(curl -s --insecure -H "Authorization: ${CATTLE_AGENT_INSTANCE_AUTH}" "${CATTLE_CONFIG_URL_V2}/certificates")
 TEMP_DIR=$(mktemp -d -p /tmp)
 
 function get_cert_val() {
